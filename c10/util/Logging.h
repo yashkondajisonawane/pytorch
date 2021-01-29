@@ -309,17 +309,45 @@ C10_API void LogAPIUsage(const std::string& context);
 // fields, will add more fields as follow ups such as performance stats,
 // internal states and env variables and etc.
 struct DDPLoggingData {
-  // Data that can be got during DistributedDataParallel construction time
+// Data that can be got during DistributedDataParallel construction time
   int world_size;
   int rank;
   std::string module_name;
+  std::string backend_name;
+  // The DDPLoggingData is logged in which iteration of the training loop,
+  // 0 if the data is logged during DistributedDataParallel construction time.
+  int iteration;
+  // Parameter's data type
+  std::string dtype;
+  // Total parameters size (Bytes)
+  int parameter_size;
+  // The number of parameter tensors
+  int num_parameters;
+  // A list of bucket sizes (Bytes) calculated during construction time
+  std::string bucket_sizes;
+
+
+  // Environment variables
+  std::string master_port;
+  std::string master_addr;
+  std::string cuda_visible_devices;
+  std::string gloo_socket_ifname;
+  std::string gloo_device_transport;
+  std::string nccl_socket_ifname;
+  std::string nccl_blocking_wait;
+  std::string nccl_debug;
+  std::string nccl_nthreads;
+  std::string nccl_ib_timeout;
+
+  // DistributedDataParallel constructor input parameters
   std::string device_ids;
   std::string output_device;
   bool broadcast_buffers;
   int bucket_cap_mb;
   bool find_unused_parameters;
   bool gradient_as_bucket_view;
-  std::string backend_name;
+
+  // Runtime states
 };
 
 C10_API void SetPyTorchDDPUsageLogger(std::function<void(const c10::DDPLoggingData&)> logger);
