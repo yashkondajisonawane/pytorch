@@ -92,6 +92,7 @@ def get_ignored_functions() -> Set[Callable]:
         torch.set_anomaly_enabled,
         torch.set_flush_denormal,
         torch.set_num_interop_threads,
+        torch.enable_global_memory_reporting,
         torch.set_num_threads,
         torch.wait,
         torch.as_tensor,
