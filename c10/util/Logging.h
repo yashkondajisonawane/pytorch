@@ -347,7 +347,21 @@ struct DDPLoggingData {
   bool find_unused_parameters = false;
   bool gradient_as_bucket_view = false;
 
-  // Runtime states
+  // Runtime stats are collected during training loop.
+  // Users can get these stats at any iteration of training
+  // loop by calling get_ddp_logging_data() in python.
+
+  // Total unused parameter size (Bytes)
+  // It is calculated after forward computation in each iteration.
+  int unused_parameter_size = 0;
+  // Rebuild buckets stats after 1st iteration
+  bool has_rebuilt_buckets = false;
+  std::vector<int> rebuilt_bucket_sizes;
+  // Average performance stats per iteration (ns)
+  int avg_forward_compute_time = 0;
+  int avg_backward_compute_time = 0;
+  int avg_backward_comm_time = 0;
+  int avg_backward_compute_comm_overlap_time = 0;
 };
 
 C10_API void SetPyTorchDDPUsageLogger(std::function<void(const c10::DDPLoggingData&)> logger);
