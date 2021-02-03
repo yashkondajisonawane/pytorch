@@ -294,8 +294,14 @@ void BytecodeDeserializer::parseMethods(
       function->append_constant(constant);
     }
 
+    static const c10::QualifiedName classPrefix = "__torch__.torch.classes";
     for (const auto& t : types_list) {
-      function->append_type(c10::parseType(t.toStringRef()));
+      c10::QualifiedName qn(t.toStringRef());
+      if (classPrefix.isPrefixOf(qn)) {
+        function->append_type(getCustomClass(qn.qualifiedName()));
+      } else {
+        function->append_type(c10::parseType(t.toStringRef()));
+      }
     }
 
     function->set_register_size(register_size);
